@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>تسجيل دخول - محول الأكواد</title>
+<style>
+  body {
+    font-family: sans-serif;
+    background: #3498db;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  .login-box {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    width: 320px;
+    box-sizing: border-box;
+  }
+  input[type=password] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 18px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+  button {
+    width: 100%;
+    margin-top: 15px;
+    padding: 10px;
+    font-size: 18px;
+    background: #2980b9;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  button:hover {
+    background: #1f6391;
+  }
+  .error {
+    color: #e74c3c;
+    margin-top: 10px;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+  <div class="login-box">
+    <h2>تسجيل الدخول</h2>
+    <input id="apiKeyInput" type="password" placeholder="أدخل مفتاح API" />
+    <button onclick="login()">دخول</button>
+    <div id="errorMsg" class="error"></div>
+  </div>
+
+<script>
+  const correctKey = 'monster_secret_123';
+
+  function login() {
+    const inputKey = document.getElementById('apiKeyInput').value.trim();
+    if(inputKey === correctKey) {
+      localStorage.setItem('apiKey', inputKey);
+      window.location.href = 'index.html';
+    } else {
+      document.getElementById('errorMsg').innerText = 'مفتاح API خاطئ! حاول مرة أخرى.';
+    }
+  }
+
+  window.onload = () => {
+    const savedKey = localStorage.getItem('apiKey');
+    if(savedKey === correctKey) {
+      window.location.href = 'index.html';
+    }
+  }
+</script>
+</body>
+</html>
+
+

@@ -1,0 +1,254 @@
+
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>تسجيل دخول - محول الأكواد</title>
+<style>
+  body {
+    font-family: sans-serif;
+    background: #3498db;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  .login-box {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    width: 320px;
+    box-sizing: border-box;
+  }
+  input[type=password] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 18px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+  button {
+    width: 100%;
+    margin-top: 15px;
+    padding: 10px;
+    font-size: 18px;
+    background: #2980b9;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  button:hover {
+    background: #1f6391;
+  }
+  .error {
+    color: #e74c3c;
+    margin-top: 10px;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+  <div class="login-box">
+    <h2>تسجيل الدخول</h2>
+    <input id="apiKeyInput" type="password" placeholder="أدخل مفتاح API" />
+    <button onclick="login()">دخول</button>
+    <div id="errorMsg" class="error"></div>
+  </div>
+
+<script>
+  const correctKey = 'monster_secret_123'; // المفتاح السري في الباك إند
+
+  function login() {
+    const inputKey = document.getElementById('apiKeyInput').value.trim();
+    if(inputKey === correctKey) {
+      localStorage.setItem('apiKey', inputKey);
+      window.location.href = 'index.html';
+    } else {
+      document.getElementById('errorMsg').innerText = 'مفتاح API خاطئ! حاول مرة أخرى.';
+    }
+  }
+
+  // إذا كان المستخدم مسجل الدخول بالفعل يعيد توجيهه مباشرة
+  window.onload = () => {
+    const savedKey = localStorage.getItem('apiKey');
+    if(savedKey === correctKey) {
+      window.location.href = 'index.html';
+    }
+  }
+</script>
+</body>
+</html>
+
+
+<!DOCTYPE html>
+<html lang="ar" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>محول الأكواد - فهد</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f4f8;
+      margin: 0;
+      padding: 20px;
+      direction: rtl;
+    }
+    h1 {
+      color: #2980b9;
+      text-align: center;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
+    }
+    select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      resize: vertical;
+      box-sizing: border-box;
+      font-family: monospace;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      background-color: #2980b9;
+      color: white;
+      font-size: 18px;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #1f6391;
+    }
+    .output {
+      margin-top: 20px;
+      background: #dff0d8;
+      color: #3c763d;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 16px;
+      word-wrap: break-word;
+      user-select: text;
+    }
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>محول الأكواد - فهد</h1>
+
+  <label for="language">اختر لغة البرمجة:</label>
+  <select id="language">
+    <option value="python">Python</option>
+    <option value="javascript">JavaScript</option>
+    <option value="php">PHP</option>
+    <option value="java">Java</option>
+    <option value="c++">C++</option>
+    <option value="c">C</option>
+    <option value="dart">Dart</option>
+    <option value="html">HTML</option>
+  </select>
+
+  <label for="code">أدخل الكود هنا:</label>
+  <textarea id="code" rows="12" placeholder="اكتب الكود هنا..."></textarea>
+
+  <button id="convertBtn">حوّل الكود</button>
+
+  <div id="result" class="output" style="display:none;"></div>
+  <div id="error" class="error" style="display:none;"></div>
+
+<script>
+  // ** غيّر هذا الرابط إلى رابط ngrok أو serveo الخاص بالباك إند عندك **
+  const API_BASE = 'https://0b1f8ef83b16e857add4cd131f587dce.serveo.net';
+
+  // المفتاح السري لازم يتطابق مع المفتاح في الباك إند وفي login.html
+  const API_KEY = 'monster_secret_123';
+
+  document.getElementById('convertBtn').onclick = async () => {
+    const lang = document.getElementById('language').value.trim();
+    const code = document.getElementById('code').value.trim();
+    const resultDiv = document.getElementById('result');
+    const errorDiv = document.getElementById('error');
+
+    resultDiv.style.display = 'none';
+    errorDiv.style.display = 'none';
+
+    if (!code) {
+      errorDiv.textContent = 'الرجاء إدخال كود لتحويله.';
+      errorDiv.style.display = 'block';
+      return;
+    }
+
+    try {
+      // إرسال طلب POST إلى الباك إند لتحويل الكود
+      const response = await fetch(`${API_BASE}/convert`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${API_KEY}`
+        },
+        body: JSON.stringify({ language: lang, code: code })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.download_link) {
+        const downloadUrl = `${API_BASE}${data.download_link}`;
+        resultDiv.innerHTML = `
+          <p>تم تحويل الكود بنجاح ✅</p>
+          <p><a href="${downloadUrl}" target="_blank" download>اضغط هنا لتحميل الملف</a></p>
+        `;
+        resultDiv.style.display = 'block';
+      } else {
+        errorDiv.textContent = data.error || 'حدث خطأ غير معروف.';
+        errorDiv.style.display = 'block';
+      }
+    } catch (err) {
+      errorDiv.textContent = 'خطأ في الاتصال بالسيرفر. تأكد من الرابط والمفتاح.';
+      errorDiv.style.display = 'block';
+    }
+  };
+
+  // تحقق من وجود apiKey في localStorage لمنع الوصول بدون تسجيل دخول
+  window.onload = () => {
+    const savedKey = localStorage.getItem('apiKey');
+    if(savedKey !== API_KEY) {
+      window.location.href = 'login.html';
+    }
+  };
+</script>
+
+</body>
+</html>
+
+
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+
+app = FastAPI()
+
+# توصيل مجلد frontend لتقديم الملفات الثابتة (html, css, js)
+app.mount("/", StaticFiles(directory="frontend", html=True), name="frontend")
+
